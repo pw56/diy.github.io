@@ -1,0 +1,191 @@
+<!DOCTYPE>
+<html>
+  <head>
+    <title>レースゲーム</title>
+  </head>
+  <body>
+    <label id="menu_button">
+      <input type="checkbox">
+      <img src="">
+    </label>
+    <div name="menu"></div>
+    
+    <div name="control">
+      <canvas id="monitor"></canvas>
+      <div name="meters">
+        <div name="speed" class="meter">
+          <div name="needle"></div>
+          <span name="value">0</span>
+        </div>
+        <div name="torque" class="meter">
+          <div name="needle"></div>
+          <span name="value">0</span>
+        </div>
+        <div name="fuel" class="meter">
+          <div name="needle"></div>
+          <span name="value">0</span>
+        </div>
+      </div>
+    </div>
+    <style>
+      body{
+        background-color:gray;
+      }
+      #monitor{
+        background-image:url("https://cdn.snsimg.carview.co.jp/minkara/userstorage/000/030/945/134/156c216134.jpg?ct=980e400a7f8d");
+        background-size:cover;
+        height:100%;
+        width:100%;
+        position:fixed;
+        top:0px;
+        left:0px;
+      }
+      div[name="meters"]{
+        transform:translate(-50%,-50%);
+        position:fixed;
+        bottom:-22.5%;
+        left:50%;
+      }
+      .meter{
+        color:#fff;
+        background-color:#0008;
+        border-color:#fff8;
+        border-style:solid;
+        display:inline-block;
+        height:22.5em;
+        width:22.5em;
+        border-width:0.5em;
+        border-radius:50%;
+        position:relative;
+      }
+      .meter>[name="needle"]{
+        background-color:#f00;
+        display:content;
+        height:1em;
+        width:1em;
+        border-radius:50%;
+        position:absolute;
+        top:50%;
+        left:50%;
+        transform:translate(-50%,-50%);
+      }
+      .meter>[name="needle"]::before{
+        background-color:#f00;
+        display:block;
+        content:'';
+        height:10em;
+        width:0.5em;
+        clip-path:polygon(50% 0%,0% 100%,75% 100%);
+        position:relative;
+        bottom:9.75em;
+        left:0.3225em;
+      }
+      .meter>[name="needle"]::after{
+        background-color:#f00;
+        display:block;
+        content:'';
+        height:1em;
+        width:0.375em;
+        clip-path:polygon(0 0,100% 0%,50% 100%);
+        position:relative;
+        bottom:9.5em;
+        left:0.3225em;
+      }
+      .meter>[name="value"]{
+        color:#fff;
+        font-size:6em;
+        transform:translate(-50%,-50%);
+        position:absolute;
+        top:70%;
+        left:50%;
+      }
+      .meter>[name="value"]::after{
+        color:#fff;
+        font-size:40%;
+        transform:translate(-50%,-50%);
+        position:absolute;
+        top:95%;
+        left:50%;
+      }
+      
+      .meter[name="speed"]>[name="value"]::after{
+        content:"km/h";
+      }
+      
+      .meter[name="torque"]>[name="value"]::after{
+        content:"速";
+      }
+
+      .meter[name="fuel"]{
+        height:11.25em;
+        width:11.25em;
+        transform:translate(-50%,-50%);
+        border-width:0.5em;
+        position:absolute;
+        bottom:-25%;
+        right:-40%;
+      }
+      .meter[name="fuel"]>[name="needle"]{
+        height:0.5em;
+        width:0.5em;
+      }
+      .meter[name="fuel"]>[name="needle"]::before{
+        height:5em;
+        width:0.25em;
+        bottom:4.875em;
+        left:0.16125em;
+      }
+      .meter[name="fuel"]>[name="needle"]::after{
+        height:0.5em;
+        width:0.1875em;
+        bottom:4.75em;
+        left:0.16125em;
+      }
+      .meter[name="fuel"]>[name="value"]{
+        font-size:3em;
+      }
+      .meter[name="fuel"]>[name="value"]::after{
+        content:"L";
+      }
+    </style>
+    <script>
+      let meter={
+        speed:function(speed){
+          if(speed<=max.speed){
+            document.querySelector('[name="speed"]>[name="needle"]').style.transform=`rotate(${-120+speed/1.5}deg)`;
+            document.querySelector('[name="speed"]>[name="value"]').textContent=Math.floor(speed);
+          }
+        },
+        torque:function(torque){
+          if(torque<=max.torque){
+            document.querySelector('[name="torque"]>[name="needle"]').style.transform=`rotate(${-120+240/max.torque*torque}deg)`;
+            document.querySelector('[name="torque"]>[name="value"]').textContent=Math.floor(gear);
+          }
+        },
+        fuel:function(fuel){
+          if(fuel<=max.fuel){
+            document.querySelector('[name="fuel"]>[name="needle"]').style.transform=`rotate(${-120+240/max.fuel*fuel}deg)`;
+            document.querySelector('[name="fuel"]>[name="value"]').textContent=fuel;
+          }
+        }
+      },
+      max={
+        speed:340,
+        torque:8,
+        fuel:50
+      };
+      var speed=0,torque=0,fuel=50,gear=1;
+      setInterval(function(){
+        speed+=1.5/gear;
+        torque+=0.10625/gear;
+        if(torque>5&&gear<6){
+          gear++;
+          torque=gear/2;
+        }
+        meter.speed(speed);
+        meter.torque(torque);
+        meter.fuel(fuel);
+      },17.5);
+    </script>
+  </body>
+</html>
